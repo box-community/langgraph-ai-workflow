@@ -1,12 +1,14 @@
 # First we initialize the model we want to use.
+from typing import Literal
+
+from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
+from langgraph.prebuilt import create_react_agent
+from pydantic import BaseModel, Field
 
 model = ChatOpenAI(model="gpt-4o", temperature=0)
 
 # For this tutorial we will use custom tool that returns pre-defined values for weather in two cities (NYC & SF)
-
-from typing import Literal
-from langchain_core.tools import tool
 
 
 @tool
@@ -24,8 +26,6 @@ tools = [get_weather]
 
 # Define the structured output schema
 
-from pydantic import BaseModel, Field
-
 
 class WeatherResponse(BaseModel):
     """Respond to the user in this format."""
@@ -35,7 +35,6 @@ class WeatherResponse(BaseModel):
 
 # Define the graph
 
-from langgraph.prebuilt import create_react_agent
 
 graph = create_react_agent(
     model,

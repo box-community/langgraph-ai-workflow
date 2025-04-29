@@ -1,26 +1,12 @@
-from typing import TypedDict
 from IPython.display import Image
+from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
+from langchain_core.tools import tool
+from langgraph.graph import END, START, MessagesState, StateGraph
+from langgraph.prebuilt import create_react_agent
+from typing_extensions import Literal
 
 # from IPython.display import Markdown
-from pydantic import BaseModel, Field
 from utils import get_llm, save_image
-from langgraph.graph import StateGraph, START, END
-from rich.console import Console
-from rich.markdown import Markdown
-
-from typing_extensions import Literal
-from langchain_core.messages import HumanMessage, SystemMessage
-
-
-from typing import Annotated, List
-import operator
-from langgraph.constants import Send
-
-from langgraph.graph import MessagesState
-from langchain_core.messages import SystemMessage, HumanMessage, ToolMessage
-
-from langchain_core.tools import tool
-from langgraph.prebuilt import create_react_agent
 
 llm = get_llm()
 

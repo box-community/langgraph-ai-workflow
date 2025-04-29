@@ -1,23 +1,19 @@
+import logging
+import uuid
+
+import dotenv
 from box_ai_agents_toolkit import get_ccg_client
 from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage
-import uuid
-
-from pydantic import BaseModel, Field
-
-import dotenv
-import logging
-
-from console_utils.console_app import (
-    print_markdown,
-)
-
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
-
+from pydantic import BaseModel, Field
 
 from box.box_agent_tools import (
     init_tools,
+)
+from console_utils.console_app import (
+    print_markdown,
 )
 
 dotenv.load_dotenv()

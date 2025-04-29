@@ -1,6 +1,4 @@
 from pydantic import BaseModel, Field
-from langchain_openai import ChatOpenAI
-
 from utils import get_llm
 
 

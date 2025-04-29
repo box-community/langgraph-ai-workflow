@@ -1,6 +1,6 @@
-from langchain_openai import ChatOpenAI
 import dotenv
 from IPython.display import Image
+from langchain_openai import ChatOpenAI
 
 dotenv.load_dotenv()
 

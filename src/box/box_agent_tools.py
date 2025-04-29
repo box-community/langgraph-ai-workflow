@@ -1,6 +1,5 @@
 from typing import List, Union
-from langchain.tools.base import StructuredTool
-from langchain_core.tools import BaseTool
+
 from box_ai_agents_toolkit import (
     File,
     Folder,
@@ -13,6 +12,8 @@ from box_ai_agents_toolkit import (
     box_search,
     get_ccg_client,
 )
+from langchain.tools.base import StructuredTool
+from langchain_core.tools import BaseTool
 
 
 def init_tools():

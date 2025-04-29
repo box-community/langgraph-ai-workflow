@@ -1,7 +1,6 @@
+from IPython.display import Image
+from langgraph.graph import END, START, StateGraph
 from typing_extensions import TypedDict
-from langgraph.graph import StateGraph, START, END
-from IPython.display import Image, display
-
 from utils import get_llm, save_image
 
 
