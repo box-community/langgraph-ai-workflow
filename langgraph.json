@@ -1,0 +1,9 @@
+{
+  "dependencies": [
+    "."
+  ],
+  "graphs": {
+    "agent": "./src/playground002.py:llm"
+  },
+  "env": ".env"
+}

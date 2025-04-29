@@ -6,6 +6,12 @@ __pycache__/
 # C extensions
 *.so
 
+#project stuff
+.env
+.auth.*
+.DS_Store
+.langgraph_api/
+
 # Distribution / packaging
 .Python
 build/
