@@ -7,6 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
     "box-ai-agents-toolkit>=0.0.42",
     "ipython>=9.2.0",
+    "langchain>=0.3.24",
     "langchain-core>=0.3.56",
     "langchain-openai>=0.3.14",
     "langgraph>=0.4.0",
