@@ -336,8 +336,8 @@ def step_suggest_actors_for_role(state: WorkFlowState) -> WorkFlowState:
 def step_analyze_author(state: WorkFlowState) -> WorkFlowState:
     """Analyze the author of the script."""
     # if state has author, we can move on
-    if state.get("author"):
-        return
+    # if state.get("author"):
+    #     return
 
     box_agent = get_box_agent(
         has_memory=False,

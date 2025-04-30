@@ -79,9 +79,12 @@ def main() -> None:
     workflow.add_edge("analyze_script", "analyze_props")
     workflow.add_edge("analyze_script", "analyze_roles")
     workflow.add_edge("analyze_roles", "suggest_actors_for_role")
-    workflow.add_edge("suggest_actors_for_role", "analyze_author")
-    workflow.add_edge("analyze_locations", "analyze_author")
-    workflow.add_edge("analyze_props", "analyze_author")
+    workflow.add_edge(
+        ["suggest_actors_for_role", "analyze_locations", "analyze_props"],
+        "analyze_author",
+    )
+    # workflow.add_edge("analyze_locations", "analyze_author")
+    # workflow.add_edge("analyze_props", "analyze_author")
     workflow.add_edge("analyze_author", "dummy")
     workflow.add_edge("dummy", END)
 
