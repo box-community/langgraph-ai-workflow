@@ -49,13 +49,15 @@ def main() -> None:
     workflow.add_node("fetch_file", step_fetch_file)
     workflow.add_node("read_box_file", step_read_box_file)
     workflow.add_node("analyze_script", step_analyze_script)
-    workflow.add_node("analyze_author", step_analyze_author)
+    # workflow.add_node("analyze_author", step_analyze_author)
 
     workflow.add_node("analyze_locations", step_analyze_locations)
     workflow.add_node("analyze_roles", step_analyze_roles)
     workflow.add_node("analyze_props", step_analyze_props)
     # workflow.add_node("aggregator", step_dummy)
     workflow.add_node("suggest_actors_for_role", step_suggest_actors_for_role)
+
+    workflow.add_node("analyze_author", step_analyze_author)
 
     workflow.add_node("dummy", step_dummy)
 
@@ -71,15 +73,16 @@ def main() -> None:
         },
     )
     workflow.add_edge("read_box_file", "analyze_script")
-    workflow.add_edge("analyze_script", "analyze_author")
+    # workflow.add_edge("analyze_script", "analyze_author")
 
-    workflow.add_edge("analyze_author", "analyze_locations")
-    workflow.add_edge("analyze_author", "analyze_props")
-    workflow.add_edge("analyze_author", "analyze_roles")
+    workflow.add_edge("analyze_script", "analyze_locations")
+    workflow.add_edge("analyze_script", "analyze_props")
+    workflow.add_edge("analyze_script", "analyze_roles")
     workflow.add_edge("analyze_roles", "suggest_actors_for_role")
-    workflow.add_edge("suggest_actors_for_role", "dummy")
-    workflow.add_edge("analyze_locations", "dummy")
-    workflow.add_edge("analyze_props", "dummy")
+    workflow.add_edge("suggest_actors_for_role", "analyze_author")
+    workflow.add_edge("analyze_locations", "analyze_author")
+    workflow.add_edge("analyze_props", "analyze_author")
+    workflow.add_edge("analyze_author", "dummy")
     workflow.add_edge("dummy", END)
 
     # Compile
