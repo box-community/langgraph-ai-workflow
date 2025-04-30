@@ -1,32 +1,33 @@
 import logging
-import uuid
 
 import dotenv
 from box_ai_agents_toolkit import get_ccg_client
-from langchain.chat_models import init_chat_model
-from langchain_core.messages import HumanMessage
-from langgraph.checkpoint.memory import MemorySaver
-from langgraph.prebuilt import create_react_agent
-from pydantic import BaseModel, Field
+from IPython.display import Image
+from langgraph.graph import END, START, StateGraph
 
-from box.box_agent_tools import (
-    init_tools,
+from box_agent import (
+    BoxFileLocation,
+    WorkFlowState,
+    step_analyze_author,
+    step_analyze_locations,
+    step_analyze_props,
+    step_analyze_roles,
+    step_analyze_script,
+    step_check_file,
+    step_dummy,
+    step_fetch_file,
+    step_read_box_file,
+    step_suggest_actors_for_role,
 )
 from console_utils.console_app import (
     print_markdown,
 )
+from utils import save_image
 
 dotenv.load_dotenv()
 
 # Disable all logging below CRITICAL
 logging.disable(logging.CRITICAL)
-
-
-class BoxFileLocation(BaseModel):
-    """Model for Box file location."""
-
-    file_name: str = Field(None, description="Name of the file.")
-    file_id: str = Field(None, description="Box file id.")
 
 
 def main() -> None:
@@ -39,36 +40,68 @@ def main() -> None:
     user_info = client.users.get_user_me()
     print(f"Connected as: {user_info.name}")
 
-    # Initialize language model
-    model = init_chat_model("gpt-4o-mini", model_provider="openai")
-    # model_structured = model.with_structured_output(BoxFileLocation)
+    # box_agent = get_box_agent(has_memory=False, response_format=BoxFileLocation)
 
-    # Create the Box agent
-    memory = MemorySaver()
-    tools = init_tools()
-    box_agent = create_react_agent(
-        model, tools, checkpointer=memory, response_format=BoxFileLocation
-    )
+    # Build workflow
+    workflow = StateGraph(WorkFlowState)
 
-    chat_id = uuid.uuid4()
-    chat_config = {"configurable": {"thread_id": str(chat_id)}}
+    # Add nodes
+    workflow.add_node("fetch_file", step_fetch_file)
+    workflow.add_node("read_box_file", step_read_box_file)
+    workflow.add_node("analyze_script", step_analyze_script)
+    workflow.add_node("analyze_author", step_analyze_author)
 
-    conversation = box_agent.invoke(
-        {
-            "messages": [
-                HumanMessage(
-                    content="locate the file Aliens - by James Cameron under my Scripts folder"
-                )
-            ]
+    workflow.add_node("analyze_locations", step_analyze_locations)
+    workflow.add_node("analyze_roles", step_analyze_roles)
+    workflow.add_node("analyze_props", step_analyze_props)
+    # workflow.add_node("aggregator", step_dummy)
+    workflow.add_node("suggest_actors_for_role", step_suggest_actors_for_role)
+
+    workflow.add_node("dummy", step_dummy)
+
+    # Add edges to connect nodes
+    workflow.add_edge(START, "fetch_file")
+
+    workflow.add_conditional_edges(
+        "fetch_file",
+        step_check_file,
+        {  # Name returned by route_joke : Name of next node to visit
+            "Found": "read_box_file",
+            "Not Found": END,
         },
-        chat_config,
     )
+    workflow.add_edge("read_box_file", "analyze_script")
+    workflow.add_edge("analyze_script", "analyze_author")
 
-    print_markdown("---")
-    # print(conversation["structured_response"])
-    script_location: BoxFileLocation = conversation["structured_response"]
-    print(script_location.model_dump())
-    print_markdown("---")
+    workflow.add_edge("analyze_author", "analyze_locations")
+    workflow.add_edge("analyze_author", "analyze_props")
+    workflow.add_edge("analyze_author", "analyze_roles")
+    workflow.add_edge("analyze_roles", "suggest_actors_for_role")
+    workflow.add_edge("suggest_actors_for_role", "dummy")
+    workflow.add_edge("analyze_locations", "dummy")
+    workflow.add_edge("analyze_props", "dummy")
+    workflow.add_edge("dummy", END)
+
+    # Compile
+    chain = workflow.compile()
+
+    # Show workflow
+    save_image(Image(chain.get_graph().draw_mermaid_png()), "img/demo.png")
+
+    state = WorkFlowState(
+        box_script_file=BoxFileLocation(
+            file_name="I, Robot",
+            parent_folder_name="Scripts",
+        )
+    )
+    # Invoke
+    state = chain.invoke(state)
+    print("State after invoking the chain:")
+    state.pop("script_file_read")
+    print(state)
+    # print author details
+    print_markdown("## Author Details")
+    print(state["author"])
 
 
 if __name__ == "__main__":

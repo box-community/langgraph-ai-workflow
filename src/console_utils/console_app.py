@@ -106,3 +106,19 @@ def type_writer_effect_machine(message: str, is_dim: bool, delay: float = 0.01):
         console.print(char, end="", style="dim" if is_dim else None, markup=True)
         time.sleep(delay)
     print()  # Move to the next line after the message is printed
+
+
+def print_messages(messages: list[HumanMessage | AIMessage | ToolMessage]):
+    """
+    Print a list of messages in the console.
+
+    Args:
+        messages (list): The list of messages to print.
+    """
+    for message in messages:
+        if isinstance(message, HumanMessage):
+            print_human_message(message)
+        elif isinstance(message, AIMessage):
+            print_ai_message(message)
+        elif isinstance(message, ToolMessage):
+            print_tool_message(message)
