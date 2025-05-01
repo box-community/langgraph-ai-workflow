@@ -6,7 +6,7 @@ from langgraph.graph.graph import CompiledGraph
 from langgraph.prebuilt import create_react_agent
 from pydantic import BaseModel, Field
 
-from box.box_agent_tools import init_tools
+from box_agent_tools import init_tools
 
 StructuredResponseSchema = Union[dict, type[BaseModel]]
 
