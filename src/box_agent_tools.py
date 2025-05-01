@@ -14,6 +14,14 @@ from box_ai_agents_toolkit import (
 )
 from langchain.tools.base import StructuredTool
 from langchain_core.tools import BaseTool
+from langchain.chat_models import init_chat_model
+from langgraph.checkpoint.memory import MemorySaver
+from langgraph.graph.graph import CompiledGraph
+from langgraph.prebuilt import create_react_agent
+from pydantic import BaseModel
+
+
+StructuredResponseSchema = Union[dict, type[BaseModel]]
 
 
 def init_tools():
@@ -63,6 +71,26 @@ def init_tools():
     )
 
     return tools
+
+
+def get_box_agent(
+    has_memory: bool = False,
+    response_format: StructuredResponseSchema
+    | tuple[str, StructuredResponseSchema]
+    | None = None,
+) -> CompiledGraph:
+    # Initialize language model
+    model = init_chat_model("gpt-4o", model_provider="openai")
+
+    # Create the Box agent
+    if has_memory:
+        memory = MemorySaver()
+    else:
+        memory = None
+    tools = init_tools()
+    return create_react_agent(
+        model, tools, checkpointer=memory, response_format=response_format
+    )
 
 
 def box_who_am_i() -> dict:
