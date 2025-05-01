@@ -41,7 +41,7 @@ def step_dummy(state: WorkFlowState) -> WorkFlowState:
     return state
 
 
-@step("Locate file in Box")
+@step("Locating file in Box")
 def step_locate_file_in_box(state: WorkFlowState) -> WorkFlowState:
     """Fetch a file from Box."""
     box_agent = get_box_agent(
