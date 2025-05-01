@@ -109,6 +109,32 @@ class Author(BaseModel):
     )
 
 
+class Producer(BaseModel):
+    name: str = Field(None, description="Name of the producer.")
+    description: str = Field(
+        None, description="Examples of work this producer is known for."
+    )
+
+
+class Producers(BaseModel):
+    producers: list[Producer] = Field(
+        None, description="List of producers for the script."
+    )
+
+
+class Director(BaseModel):
+    name: str = Field(None, description="Name of the director.")
+    description: str = Field(
+        None, description="Examples of work this director is known for."
+    )
+
+
+class Directors(BaseModel):
+    directors: list[Director] = Field(
+        None, description="List of directors for the script."
+    )
+
+
 # Graph state
 class WorkFlowState(TypedDict):
     box_script_file: BoxFileLocation
@@ -119,6 +145,9 @@ class WorkFlowState(TypedDict):
     characters: Characters
     props: Props
     author: Author
+    producers: Producers
+    directors: Directors
+    markdown: str
 
 
 def get_box_agent(
@@ -129,7 +158,6 @@ def get_box_agent(
 ) -> CompiledGraph:
     # Initialize language model
     model = init_chat_model("gpt-4o", model_provider="openai")
-    # model_structured = model.with_structured_output(BoxFileLocation)
 
     # Create the Box agent
     if has_memory:
@@ -182,11 +210,8 @@ def step_check_file(state: WorkFlowState) -> WorkFlowState:
 
 def step_read_box_file(state: WorkFlowState) -> WorkFlowState:
     """Read the file from Box."""
-    # This is a placeholder for any processing you want to do
-    # For now, it just returns the state unchanged
     box_agent = get_box_agent(
         has_memory=False,
-        # response_format={"content": str},
     )
     # Use the agent to fetch the file
     response = box_agent.invoke(
@@ -199,9 +224,7 @@ def step_read_box_file(state: WorkFlowState) -> WorkFlowState:
             ]
         }
     )
-    # print_messages(response["messages"])
     state["script_file_read"] = response["messages"][-1].content
-    # state["script_file_read"] = response["structured_response"]
     return state
 
 
@@ -222,8 +245,6 @@ def step_analyze_script(state: WorkFlowState) -> WorkFlowState:
             ]
         }
     )
-    # print_messages(response["messages"])
-    # state["script_file_read"] = response["messages"][-1].content
     state["script_data"] = response["structured_response"]
     return state
 
@@ -245,10 +266,7 @@ def step_analyze_locations(state: WorkFlowState) -> WorkFlowState:
             ]
         }
     )
-    # print_messages(response["messages"])
-    # state["script_file_read"] = response["messages"][-1].content
     state["locations"] = response["structured_response"]
-    # return state
     return response["structured_response"]
 
 
@@ -269,10 +287,7 @@ def step_analyze_roles(state: WorkFlowState) -> WorkFlowState:
             ]
         }
     )
-    # print_messages(response["messages"])
-    # state["script_file_read"] = response["messages"][-1].content
     state["characters"] = response["structured_response"]
-    # return state
     return response["structured_response"]
 
 
@@ -293,10 +308,7 @@ def step_analyze_props(state: WorkFlowState) -> WorkFlowState:
             ]
         }
     )
-    # print_messages(response["messages"])
-    # state["script_file_read"] = response["messages"][-1].content
     state["props"] = response["structured_response"]
-    # return state
 
     return response["structured_response"]
 
@@ -325,19 +337,13 @@ def step_suggest_actors_for_role(state: WorkFlowState) -> WorkFlowState:
             ]
         }
     )
-    # print_messages(response["messages"])
-    # state["script_file_read"] = response["messages"][-1].content
 
     state["characters"] = response["structured_response"]
-    # return state
     return response["structured_response"]
 
 
 def step_analyze_author(state: WorkFlowState) -> WorkFlowState:
     """Analyze the author of the script."""
-    # if state has author, we can move on
-    # if state.get("author"):
-    #     return
 
     box_agent = get_box_agent(
         has_memory=False,
@@ -354,8 +360,77 @@ def step_analyze_author(state: WorkFlowState) -> WorkFlowState:
             ]
         }
     )
-    # print_messages(response["messages"])
-    # state["script_file_read"] = response["messages"][-1].content
     state["author"] = response["structured_response"]
-    # return state
     return {"author": response["structured_response"]}
+
+
+def step_potential_producers(state: WorkFlowState) -> WorkFlowState:
+    """Suggest potential producers for the script."""
+    box_agent = get_box_agent(
+        has_memory=False,
+        response_format=Producers,
+    )
+    # Use the agent to fetch the file
+    response = box_agent.invoke(
+        {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": f"Suggest potential producers for the script {state['script_data']}, considering the type of work they are known for",
+                }
+            ]
+        }
+    )
+    state["producers"] = response["structured_response"]
+    # return {"producers": response["structured_response"]}
+    return response["structured_response"]
+
+
+def step_potential_directors(state: WorkFlowState) -> WorkFlowState:
+    """Suggest potential directors for the script."""
+    box_agent = get_box_agent(
+        has_memory=False,
+        response_format=Directors,
+    )
+    # Use the agent to fetch the file
+    response = box_agent.invoke(
+        {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": f"Suggest potential directors for the script {state['script_data']}, considering the type of work they are known for",
+                }
+            ]
+        }
+    )
+    state["directors"] = response["structured_response"]
+    # return {"directors": response["structured_response"]}
+    return response["structured_response"]
+
+
+def step_create_markdown(state: WorkFlowState) -> WorkFlowState:
+    """Create markdown for the script."""
+    box_agent = get_box_agent(
+        has_memory=False,
+    )
+    # Use the agent to fetch the file
+    response = box_agent.invoke(
+        {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": f"Create a markdown report for the script with the following sections:"
+                    f"About the script: (using {state['script_data']})"
+                    f"Locations: {state['locations']}"
+                    f"Characters: {state['characters']}"
+                    f"Props: {state['props']}"
+                    f"Author: {state['author']}"
+                    f"Producers: {state['producers']}"
+                    f"Directors: {state['directors']}"
+                    f"do not add any other information",
+                }
+            ]
+        }
+    )
+    state["markdown"] = response["messages"][-1].content
+    return state
