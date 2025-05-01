@@ -1,4 +1,4 @@
-```markdown
+
 # Starship Troopers Script Report
 
 ## About the Script
@@ -130,4 +130,3 @@ A fellow Mobile Infantry trooper known for his toughness and sense of humor. Wat
 - **Denis Villeneuve**: Known for his work on films like "Arrival" and "Blade Runner 2049," Villeneuve's skill in crafting visually stunning and thematically profound sci-fi narratives makes him an interesting choice.
 - **Lana and Lilly Wachowski**: The Wachowskis, creators of "The Matrix" series, are renowned for their innovative storytelling and ability to incorporate philosophical themes within action-packed, visually dazzling films.
 - **Joss Whedon**: Known for his work on "The Avengers" and his knack for handling ensemble casts and creating dialogue-heavy yet action-packed films, Whedon might handle the camaraderie and wit elements effectively.
-```
