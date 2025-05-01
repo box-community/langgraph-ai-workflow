@@ -118,7 +118,7 @@ def step_analyze_script(state: WorkFlowState) -> WorkFlowState:
     return state
 
 
-@step("Analyzing locations")
+@step("\tAnalyzing locations")
 def step_analyze_locations(state: WorkFlowState) -> WorkFlowState:
     """Analyze the locations in the script."""
     box_agent = get_box_agent(
@@ -142,7 +142,7 @@ def step_analyze_locations(state: WorkFlowState) -> WorkFlowState:
     return response["structured_response"]
 
 
-@step("Analyzing characters")
+@step("\tAnalyzing roles")
 def step_analyze_roles(state: WorkFlowState) -> WorkFlowState:
     """Analyze the characters in the script."""
     box_agent = get_box_agent(
@@ -164,7 +164,7 @@ def step_analyze_roles(state: WorkFlowState) -> WorkFlowState:
     return response["structured_response"]
 
 
-@step("Analyzing props")
+@step("\tAnalyzing props")
 def step_analyze_props(state: WorkFlowState) -> WorkFlowState:
     """Analyze the props in the script."""
     box_agent = get_box_agent(
@@ -187,7 +187,7 @@ def step_analyze_props(state: WorkFlowState) -> WorkFlowState:
     return response["structured_response"]
 
 
-@step("Suggesting actors for roles")
+@step("\t\tSuggesting actors for roles")
 def step_suggest_actors_for_role(state: WorkFlowState) -> WorkFlowState:
     """Suggest actors for each character in the script."""
     box_agent = get_box_agent(
@@ -237,7 +237,7 @@ def step_analyze_author(state: WorkFlowState) -> WorkFlowState:
     return {"author": response["structured_response"]}
 
 
-@step("Suggesting producers")
+@step("\tSuggesting producers")
 def step_potential_producers(state: WorkFlowState) -> WorkFlowState:
     """Suggest potential producers for the script."""
     box_agent = get_box_agent(
@@ -262,7 +262,7 @@ def step_potential_producers(state: WorkFlowState) -> WorkFlowState:
     return response["structured_response"]
 
 
-@step("Suggesting directors")
+@step("\tSuggesting directors")
 def step_potential_directors(state: WorkFlowState) -> WorkFlowState:
     """Suggest potential directors for the script."""
     box_agent = get_box_agent(
