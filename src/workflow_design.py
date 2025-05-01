@@ -11,7 +11,7 @@ from workflow_steps import (
     step_analyze_script,
     step_check_file,
     step_create_markdown,
-    step_fetch_file,
+    step_locate_file_in_box,
     step_potential_directors,
     step_potential_producers,
     step_read_box_file,
@@ -27,7 +27,7 @@ def build_workflow() -> CompiledStateGraph:
     workflow = StateGraph(WorkFlowState)
 
     # Add nodes
-    workflow.add_node("fetch_file", step_fetch_file)
+    workflow.add_node("fetch_file", step_locate_file_in_box)
     workflow.add_node("read_box_file", step_read_box_file)
     workflow.add_node("analyze_script", step_analyze_script)
 
@@ -49,11 +49,12 @@ def build_workflow() -> CompiledStateGraph:
     workflow.add_conditional_edges(
         "fetch_file",
         step_check_file,
-        {  # Name returned by route_joke : Name of next node to visit
+        {
             "Found": "read_box_file",
             "Not Found": END,
         },
     )
+
     workflow.add_edge("read_box_file", "analyze_script")
 
     workflow.add_edge("analyze_script", "analyze_locations")

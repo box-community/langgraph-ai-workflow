@@ -33,12 +33,16 @@ def main() -> None:
 
     state = WorkFlowState(
         box_script_file=BoxFileLocation(
-            file_name="Blade Runner - By Hampton Fancher",
+            file_name="Hitchhiker's-Guide-to-the-Galaxy-The",
             parent_folder_name="Scripts",
         )
     )
     # Invoke
     state = chain.invoke(state)
+
+    if state["box_script_file"].file_id is None:
+        print("File not found. Please check the file name and try again.")
+        return
 
     # print final document in markdown
     print_markdown("## Final Document")

@@ -1,3 +1,4 @@
+from box_ai_agents_toolkit import get_ccg_client
 from box_agent_tools import get_box_agent
 from console_utils import print_messages
 from workflow_classes import (
@@ -40,8 +41,8 @@ def step_dummy(state: WorkFlowState) -> WorkFlowState:
     return state
 
 
-@step("Fetching file from Box")
-def step_fetch_file(state: WorkFlowState) -> WorkFlowState:
+@step("Locate file in Box")
+def step_locate_file_in_box(state: WorkFlowState) -> WorkFlowState:
     """Fetch a file from Box."""
     box_agent = get_box_agent(
         has_memory=False,
@@ -59,7 +60,15 @@ def step_fetch_file(state: WorkFlowState) -> WorkFlowState:
     )
     if LOG_AI:
         print_messages(response["messages"])
+
     state["box_script_file"] = response["structured_response"]
+
+    file_id = state["box_script_file"].file_id
+    client = get_ccg_client()
+    try:
+        client.files.get_file_by_id(file_id)
+    except Exception:
+        state["box_script_file"].file_id = None
     return state
 
 
