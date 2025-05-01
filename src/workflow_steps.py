@@ -1,4 +1,5 @@
 from box_agent_tools import get_box_agent
+from console_utils import print_messages
 from workflow_classes import (
     WorkFlowState,
     BoxFileLocation,
@@ -13,6 +14,7 @@ from workflow_classes import (
 )
 
 LOG_STEPS = True
+LOG_AI = False
 
 
 # function that accepts a step name and the step method to be used as a decorator that if verbose is true, it prints the progress of the workflow
@@ -55,7 +57,8 @@ def step_fetch_file(state: WorkFlowState) -> WorkFlowState:
             ]
         }
     )
-
+    if LOG_AI:
+        print_messages(response["messages"])
     state["box_script_file"] = response["structured_response"]
     return state
 
@@ -87,6 +90,8 @@ def step_read_box_file(state: WorkFlowState) -> WorkFlowState:
             ]
         }
     )
+    if LOG_AI:
+        print_messages(response["messages"])
     state["script_file_read"] = response["messages"][-1].content
     return state
 
@@ -131,6 +136,8 @@ def step_analyze_locations(state: WorkFlowState) -> WorkFlowState:
             ]
         }
     )
+    if LOG_AI:
+        print_messages(response["messages"])
     state["locations"] = response["structured_response"]
     return response["structured_response"]
 
@@ -180,14 +187,6 @@ def step_analyze_props(state: WorkFlowState) -> WorkFlowState:
     return response["structured_response"]
 
 
-@step("Analyzing script")
-def step_aggregate_analysis(state: WorkFlowState) -> WorkFlowState:
-    """Aggregate the analysis results."""
-    print("Aggregating analysis results...")
-    print(state)
-    return state
-
-
 @step("Suggesting actors for roles")
 def step_suggest_actors_for_role(state: WorkFlowState) -> WorkFlowState:
     """Suggest actors for each character in the script."""
@@ -207,6 +206,8 @@ def step_suggest_actors_for_role(state: WorkFlowState) -> WorkFlowState:
         }
     )
 
+    if LOG_AI:
+        print_messages(response["messages"])
     state["characters"] = response["structured_response"]
     return response["structured_response"]
 
@@ -230,6 +231,8 @@ def step_analyze_author(state: WorkFlowState) -> WorkFlowState:
             ]
         }
     )
+    if LOG_AI:
+        print_messages(response["messages"])
     state["author"] = response["structured_response"]
     return {"author": response["structured_response"]}
 
@@ -252,6 +255,8 @@ def step_potential_producers(state: WorkFlowState) -> WorkFlowState:
             ]
         }
     )
+    if LOG_AI:
+        print_messages(response["messages"])
     state["producers"] = response["structured_response"]
     # return {"producers": response["structured_response"]}
     return response["structured_response"]
@@ -275,6 +280,8 @@ def step_potential_directors(state: WorkFlowState) -> WorkFlowState:
             ]
         }
     )
+    if LOG_AI:
+        print_messages(response["messages"])
     state["directors"] = response["structured_response"]
     # return {"directors": response["structured_response"]}
     return response["structured_response"]
@@ -306,5 +313,6 @@ def step_create_markdown(state: WorkFlowState) -> WorkFlowState:
             ]
         }
     )
+
     state["markdown"] = response["messages"][-1].content
     return state

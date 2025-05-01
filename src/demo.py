@@ -33,7 +33,7 @@ def main() -> None:
 
     state = WorkFlowState(
         box_script_file=BoxFileLocation(
-            file_name="Thing-The",
+            file_name="Martian-The",
             parent_folder_name="Scripts",
         )
     )
