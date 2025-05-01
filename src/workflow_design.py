@@ -27,7 +27,7 @@ def build_workflow() -> CompiledStateGraph:
     workflow = StateGraph(WorkFlowState)
 
     # Add nodes
-    workflow.add_node("fetch_file", step_locate_file_in_box)
+    workflow.add_node("locate_file_in_box", step_locate_file_in_box)
     workflow.add_node("read_box_file", step_read_box_file)
     workflow.add_node("analyze_script", step_analyze_script)
 
@@ -44,10 +44,10 @@ def build_workflow() -> CompiledStateGraph:
     workflow.add_node("create_markdown", step_create_markdown)
 
     # Add edges to connect nodes
-    workflow.add_edge(START, "fetch_file")
+    workflow.add_edge(START, "locate_file_in_box")
 
     workflow.add_conditional_edges(
-        "fetch_file",
+        "locate_file_in_box",
         step_check_file,
         {
             "Found": "read_box_file",
