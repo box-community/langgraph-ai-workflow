@@ -12,6 +12,24 @@ from workflow_classes import (
     Directors,
 )
 
+LOG_STEPS = True
+
+
+# function that accepts a step name and the step method to be used as a decorator that if verbose is true, it prints the progress of the workflow
+def step(name: str):
+    def decorator(func):
+        def wrapper(state: WorkFlowState):
+            if LOG_STEPS:
+                print(f"Step: {name}")
+            result = func(state)
+            # if VERBOSE:
+            #     print(f"Completed step: {name}")
+            return result
+
+        return wrapper
+
+    return decorator
+
 
 def step_dummy(state: WorkFlowState) -> WorkFlowState:
     """Dummy step to demonstrate the workflow."""
@@ -20,13 +38,13 @@ def step_dummy(state: WorkFlowState) -> WorkFlowState:
     return state
 
 
+@step("Fetching file from Box")
 def step_fetch_file(state: WorkFlowState) -> WorkFlowState:
     """Fetch a file from Box."""
     box_agent = get_box_agent(
         has_memory=False,
         response_format=BoxFileLocation,
     )
-    # Use the agent to fetch the file
     response = box_agent.invoke(
         {
             "messages": [
@@ -42,6 +60,7 @@ def step_fetch_file(state: WorkFlowState) -> WorkFlowState:
     return state
 
 
+@step("Checking file in Box")
 def step_check_file(state: WorkFlowState) -> WorkFlowState:
     """Check if the file exists in Box."""
 
@@ -51,6 +70,7 @@ def step_check_file(state: WorkFlowState) -> WorkFlowState:
         return "Not Found"
 
 
+@step("Reading file from Box")
 def step_read_box_file(state: WorkFlowState) -> WorkFlowState:
     """Read the file from Box."""
     box_agent = get_box_agent(
@@ -71,6 +91,7 @@ def step_read_box_file(state: WorkFlowState) -> WorkFlowState:
     return state
 
 
+@step("Analyzing script")
 def step_analyze_script(state: WorkFlowState) -> WorkFlowState:
     """Analyze the script."""
     box_agent = get_box_agent(
@@ -92,6 +113,7 @@ def step_analyze_script(state: WorkFlowState) -> WorkFlowState:
     return state
 
 
+@step("Analyzing locations")
 def step_analyze_locations(state: WorkFlowState) -> WorkFlowState:
     """Analyze the locations in the script."""
     box_agent = get_box_agent(
@@ -113,6 +135,7 @@ def step_analyze_locations(state: WorkFlowState) -> WorkFlowState:
     return response["structured_response"]
 
 
+@step("Analyzing characters")
 def step_analyze_roles(state: WorkFlowState) -> WorkFlowState:
     """Analyze the characters in the script."""
     box_agent = get_box_agent(
@@ -134,6 +157,7 @@ def step_analyze_roles(state: WorkFlowState) -> WorkFlowState:
     return response["structured_response"]
 
 
+@step("Analyzing props")
 def step_analyze_props(state: WorkFlowState) -> WorkFlowState:
     """Analyze the props in the script."""
     box_agent = get_box_agent(
@@ -156,6 +180,7 @@ def step_analyze_props(state: WorkFlowState) -> WorkFlowState:
     return response["structured_response"]
 
 
+@step("Analyzing script")
 def step_aggregate_analysis(state: WorkFlowState) -> WorkFlowState:
     """Aggregate the analysis results."""
     print("Aggregating analysis results...")
@@ -163,6 +188,7 @@ def step_aggregate_analysis(state: WorkFlowState) -> WorkFlowState:
     return state
 
 
+@step("Suggesting actors for roles")
 def step_suggest_actors_for_role(state: WorkFlowState) -> WorkFlowState:
     """Suggest actors for each character in the script."""
     box_agent = get_box_agent(
@@ -185,6 +211,7 @@ def step_suggest_actors_for_role(state: WorkFlowState) -> WorkFlowState:
     return response["structured_response"]
 
 
+@step("Analyzing script author")
 def step_analyze_author(state: WorkFlowState) -> WorkFlowState:
     """Analyze the author of the script."""
 
@@ -207,6 +234,7 @@ def step_analyze_author(state: WorkFlowState) -> WorkFlowState:
     return {"author": response["structured_response"]}
 
 
+@step("Suggesting producers")
 def step_potential_producers(state: WorkFlowState) -> WorkFlowState:
     """Suggest potential producers for the script."""
     box_agent = get_box_agent(
@@ -229,6 +257,7 @@ def step_potential_producers(state: WorkFlowState) -> WorkFlowState:
     return response["structured_response"]
 
 
+@step("Suggesting directors")
 def step_potential_directors(state: WorkFlowState) -> WorkFlowState:
     """Suggest potential directors for the script."""
     box_agent = get_box_agent(
@@ -251,6 +280,7 @@ def step_potential_directors(state: WorkFlowState) -> WorkFlowState:
     return response["structured_response"]
 
 
+@step("Creating markdown")
 def step_create_markdown(state: WorkFlowState) -> WorkFlowState:
     """Create markdown for the script."""
     box_agent = get_box_agent(
