@@ -21,7 +21,7 @@ from box_agent import (
     step_read_box_file,
     step_suggest_actors_for_role,
 )
-from console_utils.console_app import (
+from console_utils import (
     print_markdown,
 )
 from utils import save_image, save_markdown

@@ -425,8 +425,8 @@ def step_create_markdown(state: WorkFlowState) -> WorkFlowState:
                     f"Characters: {state['characters']}"
                     f"Props: {state['props']}"
                     f"Author: {state['author']}"
-                    f"Producers: {state['producers']}"
-                    f"Directors: {state['directors']}"
+                    f"Suggested Producers: {state['producers']}"
+                    f"Suggested Directors: {state['directors']}"
                     f"do not add any other information",
                 }
             ]
