@@ -24,7 +24,7 @@ from box_agent import (
 from console_utils import (
     print_markdown,
 )
-from utils import save_image, save_markdown
+from file_utils import save_image, save_markdown
 
 dotenv.load_dotenv()
 
@@ -97,7 +97,7 @@ def main() -> None:
 
     state = WorkFlowState(
         box_script_file=BoxFileLocation(
-            file_name="Starship-Troopers",
+            file_name="Limitless",
             parent_folder_name="Scripts",
         )
     )

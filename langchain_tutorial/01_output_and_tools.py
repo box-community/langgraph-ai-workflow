@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from utils import get_llm
+from file_utils import get_llm
 
 
 class SearchQuery(BaseModel):
