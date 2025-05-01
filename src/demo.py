@@ -93,7 +93,7 @@ def main() -> None:
 
     chain = workflow.compile()
 
-    save_image(Image(chain.get_graph().draw_mermaid_png()), "img/demo.png")
+    save_image(Image(chain.get_graph().draw_mermaid_png()), "output/workflow.png")
 
     state = WorkFlowState(
         box_script_file=BoxFileLocation(
@@ -111,11 +111,11 @@ def main() -> None:
     )
     save_markdown(
         state["markdown"],
-        state["box_script_file"].file_name.replace(" ", "_") + ".md",
+        "output/" + state["box_script_file"].file_name.replace(" ", "_") + ".md",
     )
     save_markdown(
         state["markdown"],
-        "script_analysis.md",
+        "output/script_analysis.md",
     )
 
 
