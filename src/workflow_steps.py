@@ -270,7 +270,8 @@ def step_create_markdown(state: WorkFlowState) -> WorkFlowState:
                     f"Author: {state['author']}"
                     f"Suggested Producers: {state['producers']}"
                     f"Suggested Directors: {state['directors']}"
-                    f"do not add any other information",
+                    f"do not add any other information"
+                    f"do not enclose the markdown in any code block",
                 }
             ]
         }
