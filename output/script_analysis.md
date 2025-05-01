@@ -1,4 +1,4 @@
-```markdown
+
 # Minority Report Script Markdown Report
 
 ## About the Script
@@ -87,4 +87,3 @@
 - **Ridley Scott**: With classics like "Blade Runner" and "The Martian" under his belt.
 - **Neill Blomkamp**: Known for films such as "District 9" and "Elysium."
 - **James Cameron**: A pioneer in the science fiction genre with films like "Terminator 2" and "Avatar."
-```
